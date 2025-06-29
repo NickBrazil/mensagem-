@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -14,12 +13,14 @@
       font-size: 30px;
       text-align: center;
       margin: 0;
+      overflow: hidden;
       font-weight: bold;
+      touch-action: none;
+      user-select: none;
     }
 
     #skull {
       font-size: 60px;
-      white-space: pre;
       margin-top: 50px;
     }
 
@@ -36,16 +37,24 @@
     }
 
     #startBtn {
-      display: inline-block;
-      font-size: 22px;
-      margin-top: 40px;
-      padding: 10px 25px;
+      font-size: 28px;
+      padding: 20px 40px;
       background-color: lime;
       color: black;
       border: none;
       cursor: pointer;
       font-weight: bold;
-      border-radius: 5px;
+      border-radius: 10px;
+      margin-top: 30px;
+    }
+
+    #overlayBlock {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 9999;
+      background-color: transparent;
+      pointer-events: all;
     }
   </style>
 </head>
@@ -55,56 +64,11 @@
 
   <div id="msg"></div>
 
-  <button id="startBtn" onclick="startSequence()">Iniciar</button>
+  <button id="startBtn" onclick="startSequence()">INICIAR</button>
+
+  <div id="overlayBlock" style="display: none;" onclick="alert('Tentativa de retorno bloqueada...')"></div>
 
   <script>
     const msgEl = document.getElementById("msg");
     const startBtn = document.getElementById("startBtn");
-    const fullText = "SEUS DADOS FORAM COMPACTADOS E COPIADOS PARA OUTRO APARELHO!\nAGRADECEMOS PELA COLABORAÇÃO.";
-    let charIndex = 0;
-
-    function playBeep() {
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const oscillator = audioCtx.createOscillator();
-      oscillator.type = 'square';
-      oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
-      oscillator.connect(audioCtx.destination);
-      oscillator.start();
-      setTimeout(() => {
-        oscillator.stop();
-        audioCtx.close();
-      }, 3000);
-    }
-
-    function typeWriter() {
-      if (charIndex < fullText.length) {
-        msgEl.innerHTML += fullText.charAt(charIndex) === '\n' ? "<br>" : fullText.charAt(charIndex);
-        charIndex++;
-        setTimeout(typeWriter, 50);
-      } else {
-        startFlashing();
-      }
-    }
-
-    function startFlashing() {
-      let flashCount = 0;
-      const maxFlashes = 10;
-      const flashInterval = setInterval(() => {
-        document.body.classList.toggle("flash");
-        flashCount++;
-        if (flashCount >= maxFlashes * 2) {
-          clearInterval(flashInterval);
-          document.body.classList.remove("flash");
-        }
-      }, 200);
-    }
-
-    function startSequence() {
-      playBeep();
-      startBtn.style.display = "none";
-      typeWriter();
-    }
-  </script>
-
-</body>
-</html>
+    const ove
