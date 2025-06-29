@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Acesso Remoto</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Stardos+Stencil&display=swap');
+
+    body {
+      background-color: black;
+      color: lime;
+      font-family: 'Stardos Stencil', monospace;
+      font-size: 30px;
+      text-align: center;
+      margin: 0;
+      overflow: hidden;
+      user-select: none;
+      pointer-events: none;
+      font-weight: bold;
+    }
+
+    #skull {
+      font-size: 90px;
+      white-space: pre;
+      margin-top: 50px;
+      font-weight: bold;
+    }
+
+    #msg {
+      font-size: 46px;
+      margin: 60px auto;
+      width: 90%;
+      height: auto;
+      line-height: 1.5;
+      font-weight: bold;
+    }
+
+    .flash {
+      background-color: lime !important;
+    }
+
+    audio {
+      display: none;
+    }
+
+    #startBtn {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <audio id="beep" loop>
+    <source src="https://www.soundjay.com/button/beep-07.mp3" type="audio/mpeg">
+  </audio>
+
+  <pre id="skull">☠ HACKER ☠</pre>
+
+  <div id="msg"></div>
+
+  <button id="startBtn" onclick="document.getElementById('beep').play()">Iniciar</button>
+
+  <script>
+    const msgEl = document.getElementById("msg");
+    const fullText = "SEUS DADOS FORAM COMPACTADOS E COPIADOS PARA OUTRO APARELHO!\nAGRADECEMOS PELA COLABORAÇÃO.";
+    let charIndex = 0;
+
+    // toca som ao carregar (usando botão oculto)
+    window.onload = () => {
+      document.getElementById("startBtn").click();
+    };
+
+    function typeWriter() {
+      if (charIndex < fullText.length) {
+        msgEl.innerHTML += fullText.charAt(charIndex) === '\n' ? "<br>" : fullText.charAt(charIndex);
+        charIndex++;
+        setTimeout(typeWriter, 50);
+      } else {
+        startFlashing();
+      }
+    }
+
+    function startFlashing() {
+      let flashCount = 0;
+      const maxFlashes = 10;
+      const flashInterval = setInterval(() => {
+        document.body.classList.toggle("flash");
+        flashCount++;
+        if (flashCount >= maxFlashes * 2) {
+          clearInterval(flashInterval);
+          document.body.classList.remove("flash");
+          freezeScreen();
+        }
+      }, 200);
+    }
+
+    function freezeScreen() {
+      setTimeout(() => {
+        document.body.style.pointerEvents = "auto";
+        document.body.style.userSelect = "auto";
+      }, 15000);
+    }
+
+    typeWriter();
+  </script>
+
+</body>
+</html>
