@@ -15,7 +15,6 @@
       margin: 0;
       overflow: hidden;
       font-weight: bold;
-      touch-action: none;
       user-select: none;
     }
 
@@ -71,4 +70,68 @@
   <script>
     const msgEl = document.getElementById("msg");
     const startBtn = document.getElementById("startBtn");
-    const ove
+    const overlay = document.getElementById("overlayBlock");
+    const fullText = "SEUS DADOS FORAM COMPACTADOS E COPIADOS PARA OUTRO APARELHO!\nAGRADECEMOS PELA COLABORAÇÃO.";
+    let charIndex = 0;
+
+    function playBeep() {
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const oscillator = audioCtx.createOscillator();
+      oscillator.type = 'square';
+      oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
+      oscillator.connect(audioCtx.destination);
+      oscillator.start();
+      setTimeout(() => {
+        oscillator.stop();
+        audioCtx.close();
+      }, 3000);
+    }
+
+    function typeWriter() {
+      if (charIndex < fullText.length) {
+        msgEl.innerHTML += fullText.charAt(charIndex) === '\n' ? "<br>" : fullText.charAt(charIndex);
+        charIndex++;
+        setTimeout(typeWriter, 50);
+      } else {
+        startFlashing();
+      }
+    }
+
+    function startFlashing() {
+      let flashCount = 0;
+      const maxFlashes = 10;
+      const flashInterval = setInterval(() => {
+        document.body.classList.toggle("flash");
+        flashCount++;
+        if (flashCount >= maxFlashes * 2) {
+          clearInterval(flashInterval);
+          simulateLock();
+        }
+      }, 200);
+    }
+
+    function simulateLock() {
+      // Ativa o travamento de toque
+      document.body.style.touchAction = "none";
+      overlay.style.display = 'block';
+      history.pushState(null, '', location.href);
+      window.onpopstate = () => {
+        history.pushState(null, '', location.href);
+        alert('Retorno bloqueado...');
+      };
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        document.body.style.touchAction = "auto";
+        window.onpopstate = null;
+      }, 15000);
+    }
+
+    function startSequence() {
+      playBeep();
+      startBtn.style.display = "none";
+      typeWriter();
+    }
+  </script>
+
+</body>
+</html>
